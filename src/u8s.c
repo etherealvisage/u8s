@@ -3,7 +3,7 @@
 
 #include "u8s.h"
 
-u8s_cptr u8s_next(u8s_cptr str) {
+U8S_NAME(cptr) U8S_NAME(next)(U8S_NAME(cptr) str) {
     // non-extended character?
     if((*str & 0xc0) == 0x0) return str+1;
     // the annoying case, in the middle of a character
@@ -27,22 +27,22 @@ u8s_cptr u8s_next(u8s_cptr str) {
     return str+1;
 }
 
-size_t u8s_strlen(u8s_cptr str) {
+size_t U8S_NAME(strlen)(U8S_NAME(cptr) str) {
     size_t result = 0;
     while(*str != 0) {
-        str = u8s_next(str);
+        str = U8S_NAME(next)(str);
         result ++;
     }
     return result;
 }
 
-size_t u8s_strlenb(u8s_cptr str) {
+size_t U8S_NAME(strlenb)(U8S_NAME(cptr) str) {
     size_t result = 0;
     while(*str != 0) str ++, result ++;
     return result;
 }
 
-u8s_ptr u8s_strcpy(u8s_ptr target, u8s_cptr src) {
+U8S_NAME(ptr) U8S_NAME(strcpy)(U8S_NAME(ptr) target, U8S_NAME(cptr) src) {
     do {
         *(target ++) = *(src ++);
     } while(*src != 0);
@@ -50,10 +50,12 @@ u8s_ptr u8s_strcpy(u8s_ptr target, u8s_cptr src) {
     return target;
 }
 
-u8s_ptr u8s_strncpy(u8s_ptr target, u8s_cptr src, size_t bufsiz) {
+U8S_NAME(ptr) U8S_NAME(strncpy)(U8S_NAME(ptr) target, U8S_NAME(cptr) src,
+    size_t bufsiz) {
+
     size_t used = 0;
     while(*src != 0) {
-        u8s_cptr next = u8s_next(src);
+        U8S_NAME(cptr) next = U8S_NAME(next)(src);
         ptrdiff_t len = next-src;
         if(used+len >= bufsiz) break;
         memcpy(target, src, len);
@@ -63,14 +65,14 @@ u8s_ptr u8s_strncpy(u8s_ptr target, u8s_cptr src, size_t bufsiz) {
     return target;
 }
 
-int u8s_strcmp(u8s_cptr a, u8s_cptr b) {
-    return u8s_strncmp(a, b, (unsigned)-1);
+int U8S_NAME(strcmp)(U8S_NAME(cptr) a, U8S_NAME(cptr) b) {
+    return U8S_NAME(strncmp)(a, b, (unsigned)-1);
 }
 
-int u8s_strncmp(u8s_cptr a, u8s_cptr b, size_t bufsiz) {
+int U8S_NAME(strncmp)(U8S_NAME(cptr) a, U8S_NAME(cptr) b, size_t bufsiz) {
     return strncmp(a, b, bufsiz);
 }
 
-u8s_ptr u8s_strdup(u8s_cptr s) {
-    return u8s_strcpy(malloc(u8s_strlenb(s)), s);
+U8S_NAME(ptr) U8S_NAME(strdup)(U8S_NAME(cptr) s) {
+    return U8S_NAME(strcpy)(malloc(U8S_NAME(strlenb(s))), s);
 }
