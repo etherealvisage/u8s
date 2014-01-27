@@ -42,6 +42,12 @@ size_t U8S_NAME(strlenb)(U8S_NAME(cptr) str) {
     return result;
 }
 
+size_t U8S_NAME(strnlenb)(U8S_NAME(cptr) str, size_t bufsiz) {
+    size_t result = 0;
+    while(*str != 0 && result < bufsiz) str ++, result ++;
+    return result;
+}
+
 U8S_NAME(ptr) U8S_NAME(strcpy)(U8S_NAME(ptr) target, U8S_NAME(cptr) src) {
     do {
         *(target ++) = *(src ++);
@@ -58,10 +64,10 @@ U8S_NAME(ptr) U8S_NAME(strncpy)(U8S_NAME(ptr) target, U8S_NAME(cptr) src,
         U8S_NAME(cptr) next = U8S_NAME(next)(src);
         ptrdiff_t len = next-src;
         if(used+len >= bufsiz) break;
-        memcpy(target, src, len);
-        target += len, src += len;
+        memcpy(target + used, src, len);
+        used += len, src += len;
     }
-    *target = 0;
+    target[used] = 0;
     return target;
 }
 
@@ -75,4 +81,11 @@ int U8S_NAME(strncmp)(U8S_NAME(cptr) a, U8S_NAME(cptr) b, size_t bufsiz) {
 
 U8S_NAME(ptr) U8S_NAME(strdup)(U8S_NAME(cptr) s) {
     return U8S_NAME(strcpy)(malloc(U8S_NAME(strlenb(s))), s);
+}
+
+U8S_NAME(ptr) U8S_NAME(strndup)(U8S_NAME(cptr) s, size_t bufsiz) {
+    return U8S_NAME(strncpy)(
+        malloc(U8S_NAME(strnlenb)(s, bufsiz)+1),
+        s,
+        bufsiz+1);
 }
